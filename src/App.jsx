@@ -216,21 +216,8 @@ function StarfieldCanvas() {
 // ═══════════════════════════════════════════════════════════════════════════
 function Hero({ sectionRef, onCTAClick }) {
   const [on, setOn] = useState(false);
-  const [emailHero, setEmailHero] = useState('');
-  const [heroSent, setHeroSent] = useState(false);
   const width = useWindowWidth();
   const isMobile = width <= MOBILE;
-
-  const handleHeroCTA = async () => {
-    if (emailHero && emailHero.includes('@')) {
-      if (GSHEET_URL) {
-        try { await fetch(`${GSHEET_URL}?email=${encodeURIComponent(emailHero)}`, { mode: 'no-cors' }); } catch {}
-      }
-      setHeroSent(true);
-    } else {
-      onCTAClick();
-    }
-  };
   useEffect(() => { const t = setTimeout(() => setOn(true), 120); return () => clearTimeout(t); }, []);
   const tr = (d) => `opacity 1.1s ease ${d}ms, transform 1.1s cubic-bezier(0.16,1,0.3,1) ${d}ms`;
 
@@ -238,7 +225,7 @@ function Hero({ sectionRef, onCTAClick }) {
     <section ref={sectionRef} style={{
       minHeight: '100vh', display: 'flex', flexDirection: 'column',
       justifyContent: 'center', alignItems: 'center',
-      padding: isMobile ? '112px 0 60px' : '144px 0 80px',
+      padding: isMobile ? '60px 0' : '80px 0',
       textAlign: 'center',
       position: 'relative', overflow: 'hidden', background: 'transparent',
       width: '100%', boxSizing: 'border-box',
@@ -265,40 +252,7 @@ function Hero({ sectionRef, onCTAClick }) {
         </p>
 
         <div id="hero-cta" style={{ opacity: on ? 1 : 0, transform: on ? 'none' : 'translateY(14px)', transition: tr(680) }}>
-          {heroSent ? (
-            <p style={{ fontFamily: FONT, fontSize: 16, color: C.green, fontWeight: 600 }}>
-              ✓ Отлично! Мы свяжемся с вами.
-            </p>
-          ) : (
-            <>
-              <div style={{
-                display: 'flex', flexDirection: isMobile ? 'column' : 'row',
-                gap: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 16,
-              }}>
-                <input
-                  value={emailHero}
-                  onChange={e => setEmailHero(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleHeroCTA()}
-                  placeholder="Ваш email"
-                  style={{
-                    fontFamily: FONT, fontSize: 15, padding: '14px 20px',
-                    borderRadius: 9, border: `1.5px solid ${C.green}40`,
-                    background: 'rgba(255,255,255,0.85)', color: C.text,
-                    outline: 'none', width: isMobile ? '100%' : 260,
-                    transition: 'border-color .2s',
-                  }}
-                  onFocus={e => e.target.style.borderColor = C.green}
-                  onBlur={e => e.target.style.borderColor = `${C.green}40`}
-                />
-                <CTABtn onClick={handleHeroCTA}>Начать сейчас →</CTABtn>
-              </div>
-              <p style={{ fontFamily: FONT, fontSize: 13, color: C.muted }}>
-                ✓ Уже{' '}
-                <span style={{ color: C.green, fontWeight: 700 }}>100+</span>
-                {' '}заявок на рецензирование
-              </p>
-            </>
-          )}
+          <CTABtn onClick={onCTAClick}>Начать сейчас</CTABtn>
         </div>
       </Wrap>
     </section>
@@ -774,17 +728,17 @@ function StepCard({ n, title, body, isMobile, id }) {
       style={{
         height: '100%', display: 'flex', flexDirection: 'column',
         padding: isMobile ? '24px 20px' : '34px 30px', borderRadius: 14,
-        background: hov ? C.text : 'rgba(13,31,23,0.85)',
+        background: hov ? 'rgba(255,255,255,0.98)' : 'rgba(255,255,255,0.88)',
         backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-        border: `1px solid ${hov ? C.green + '60' : 'rgba(0,168,120,0.18)'}`,
+        border: `1px solid ${hov ? C.green + '55' : C.border}`,
         transform: hov ? 'translateY(-7px) scale(1.015)' : 'translateY(0px) scale(1)',
-        boxShadow: hov ? `0 24px 64px rgba(0,168,120,0.18), inset 0 0 40px rgba(0,168,120,0.05)` : '0 2px 16px rgba(0,0,0,0.18)',
+        boxShadow: hov ? `0 24px 64px rgba(0,168,120,0.12), inset 0 0 40px rgba(0,168,120,0.03)` : '0 2px 16px rgba(0,100,60,0.06)',
         transition: 'all 0.4s cubic-bezier(0.16,1,0.3,1)', cursor: 'default',
       }}
     >
       <div style={{
-        fontFamily: FONT, fontWeight: 700, fontSize: 32, lineHeight: 1, marginBottom: 20,
-        color: C.green, transition: 'color 0.4s ease',
+        fontFamily: FONT, fontWeight: 300, fontSize: 54, lineHeight: 1, marginBottom: 20,
+        color: hov ? 'rgba(0,168,120,0.48)' : 'rgba(0,168,120,0.28)', transition: 'color 0.4s ease',
       }}>{n}</div>
       <div style={{
         width: 38, height: 2,
@@ -794,10 +748,10 @@ function StepCard({ n, title, body, isMobile, id }) {
         transformOrigin: 'left',
         transition: 'transform 0.45s cubic-bezier(0.16,1,0.3,1)',
       }} />
-      <h3 style={{ fontFamily: FONT, fontWeight: 700, fontSize: 21, color: '#fff', marginBottom: 14, lineHeight: 1.3 }}>
+      <h3 style={{ fontFamily: FONT, fontWeight: 700, fontSize: 21, color: C.text, marginBottom: 14, lineHeight: 1.3 }}>
         {title}
       </h3>
-      <p style={{ fontFamily: FONT, fontWeight: 300, fontSize: 15, color: 'rgba(255,255,255,0.58)', lineHeight: 1.8, flex: 1 }}>
+      <p style={{ fontFamily: FONT, fontWeight: 300, fontSize: 15, color: C.muted, lineHeight: 1.8, flex: 1 }}>
         {body}
       </p>
     </div>
@@ -939,22 +893,9 @@ function Discussion({ sectionRef }) {
 // ═══════════════════════════════════════════════════════════════════════════
 // SCREEN 5 — FINAL
 // ═══════════════════════════════════════════════════════════════════════════
-function Final({ sectionRef, onCTAClick }) {
+function Final({ sectionRef }) {
   const width = useWindowWidth();
   const isMobile = width <= MOBILE;
-  const [emailFinal, setEmailFinal] = useState('');
-  const [finalSent, setFinalSent] = useState(false);
-
-  const handleFinalCTA = async () => {
-    if (emailFinal && emailFinal.includes('@')) {
-      if (GSHEET_URL) {
-        try { await fetch(`${GSHEET_URL}?email=${encodeURIComponent(emailFinal)}`, { mode: 'no-cors' }); } catch {}
-      }
-      setFinalSent(true);
-    } else {
-      onCTAClick();
-    }
-  };
 
   return (
     <section ref={sectionRef} style={{
@@ -963,7 +904,7 @@ function Final({ sectionRef, onCTAClick }) {
       padding: isMobile ? '80px 0' : '130px 0',
       textAlign: 'center',
       position: 'relative', overflow: 'hidden',
-      background: C.text, zIndex: 1,
+      background: 'transparent', zIndex: 1,
       width: '100%', boxSizing: 'border-box',
     }}>
 
@@ -972,62 +913,19 @@ function Final({ sectionRef, onCTAClick }) {
           <h2 style={{
             fontFamily: FONT, fontWeight: 900,
             fontSize: isMobile ? 'clamp(24px, 6vw, 48px)' : 'clamp(30px, 5.2vw, 72px)',
-            color: '#fff', lineHeight: 1.12,
-            marginBottom: 28, letterSpacing: '-0.02em',
+            color: C.text, lineHeight: 1.12,
+            marginBottom: 40, letterSpacing: '-0.02em',
           }}>
             Академическая экспертиза<br/>больше не ограничена временем.
           </h2>
         </Fade>
         <Fade delay={180}>
-          <p style={{ fontFamily: FONT, fontWeight: 300, fontSize: isMobile ? 15 : 18, color: 'rgba(255,255,255,0.50)', maxWidth: 460, margin: '0 auto 40px', lineHeight: 1.8 }}>
+          <p style={{ fontFamily: FONT, fontWeight: 300, fontSize: isMobile ? 15 : 18, color: C.muted, maxWidth: 460, margin: '0 auto 56px', lineHeight: 1.8 }}>
             Присоединяйтесь к будущему научного рецензирования.
           </p>
         </Fade>
         <Fade delay={360}>
-          {finalSent ? (
-            <p style={{ fontFamily: FONT, fontSize: 16, color: C.green, fontWeight: 600 }}>
-              ✓ Отлично! Мы свяжемся с вами.
-            </p>
-          ) : (
-            <>
-              <div style={{
-                display: 'flex', flexDirection: isMobile ? 'column' : 'row',
-                gap: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 16,
-              }}>
-                <input
-                  value={emailFinal}
-                  onChange={e => setEmailFinal(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleFinalCTA()}
-                  placeholder="Ваш email"
-                  style={{
-                    fontFamily: FONT, fontSize: 15, padding: '14px 20px',
-                    borderRadius: 9, border: `1.5px solid rgba(0,168,120,0.35)`,
-                    background: 'rgba(255,255,255,0.06)', color: '#fff',
-                    outline: 'none', width: isMobile ? '100%' : 260,
-                    transition: 'border-color .2s',
-                  }}
-                  onFocus={e => e.target.style.borderColor = C.green}
-                  onBlur={e => e.target.style.borderColor = 'rgba(0,168,120,0.35)'}
-                />
-                <button onClick={handleFinalCTA} style={{
-                  fontFamily: FONT, fontSize: 15, fontWeight: 700,
-                  padding: '14px 36px', borderRadius: 9,
-                  background: C.green, border: 'none', color: '#fff',
-                  cursor: 'pointer', letterSpacing: .5,
-                  boxShadow: `0 0 30px ${C.tealGlow}`,
-                  transition: 'opacity .2s', whiteSpace: 'nowrap',
-                }}
-                  onMouseEnter={e => e.currentTarget.style.opacity = '.8'}
-                  onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-                >Запросить рецензию →</button>
-              </div>
-              <p style={{ fontFamily: FONT, fontSize: 13, color: 'rgba(255,255,255,0.35)' }}>
-                ✓ Уже{' '}
-                <span style={{ color: C.green, fontWeight: 700 }}>100+</span>
-                {' '}заявок на рецензирование
-              </p>
-            </>
-          )}
+          <CTABtn onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>Запросить рецензию</CTABtn>
         </Fade>
       </Wrap>
     </section>
@@ -1203,102 +1101,6 @@ function Modal({ onClose }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// NAVBAR
-// ═══════════════════════════════════════════════════════════════════════════
-function NavBar({ onCTAClick }) {
-  const width = useWindowWidth();
-  const isMobile = width <= MOBILE;
-  return (
-    <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
-      background: 'rgba(13,31,23,0.88)', backdropFilter: 'blur(14px)',
-      WebkitBackdropFilter: 'blur(14px)',
-      borderBottom: '1px solid rgba(0,168,120,0.15)',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: isMobile ? '0 20px' : '0 clamp(20px,4vw,80px)',
-      height: isMobile ? 52 : 64,
-      boxSizing: 'border-box',
-    }}>
-      <span style={{ fontFamily: FONT, fontWeight: 900, fontSize: 20, color: '#fff', letterSpacing: '-0.5px' }}>
-        ВДС<span style={{ color: C.green }}>.</span>
-      </span>
-      {!isMobile && (
-        <div style={{ display: 'flex', gap: 32 }}>
-          {['О системе', 'Как работает', 'Дискуссия'].map(l => (
-            <span key={l} style={{
-              fontFamily: FONT, fontSize: 14, color: 'rgba(255,255,255,0.60)',
-              cursor: 'pointer', transition: 'color .2s',
-            }}
-              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-              onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.60)'}
-            >{l}</span>
-          ))}
-        </div>
-      )}
-      <button onClick={onCTAClick} style={{
-        fontFamily: FONT, fontSize: 13, fontWeight: 700, letterSpacing: .5,
-        padding: isMobile ? '8px 18px' : '10px 24px', borderRadius: 8,
-        background: C.green, border: 'none', color: '#fff', cursor: 'pointer',
-        transition: 'opacity .2s',
-      }}
-        onMouseEnter={e => e.currentTarget.style.opacity = '.8'}
-        onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-      >Начать сейчас</button>
-    </nav>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// SELL STRIP
-// ═══════════════════════════════════════════════════════════════════════════
-function SellStrip({ onCTAClick }) {
-  const width = useWindowWidth();
-  const isMobile = width <= MOBILE;
-  return (
-    <section style={{
-      background: C.text,
-      padding: isMobile ? '60px 0' : '80px 0',
-      textAlign: 'center', position: 'relative', zIndex: 1,
-      width: '100%', boxSizing: 'border-box',
-    }}>
-      <Wrap>
-        <Fade>
-          <p style={{
-            fontFamily: FONT, fontWeight: 700, fontSize: 11, letterSpacing: 3,
-            color: C.green, textTransform: 'uppercase', marginBottom: 20,
-          }}>Результат за один вечер</p>
-          <h2 style={{
-            fontFamily: FONT, fontWeight: 900,
-            fontSize: isMobile ? 'clamp(24px,6vw,36px)' : 'clamp(28px,3.8vw,52px)',
-            color: '#fff', lineHeight: 1.15, marginBottom: 24, letterSpacing: '-0.02em',
-          }}>
-            Получите глубокую рецензию<br/>
-            <span style={{ color: C.green }}>за один вечер</span>, а не через 6 месяцев
-          </h2>
-          <p style={{
-            fontFamily: FONT, fontWeight: 300, fontSize: isMobile ? 15 : 18,
-            color: 'rgba(255,255,255,0.50)', maxWidth: 520, margin: '0 auto 36px', lineHeight: 1.7,
-          }}>
-            Наши эксперты проанализируют структуру, гипотезу и методологию — и дадут развёрнутую научную критику.
-          </p>
-          <button onClick={onCTAClick} style={{
-            fontFamily: FONT, fontSize: 15, fontWeight: 700,
-            padding: '15px 44px', borderRadius: 9,
-            background: C.green, border: 'none', color: '#fff',
-            cursor: 'pointer', letterSpacing: .5,
-            boxShadow: `0 0 40px ${C.tealGlow}`,
-            transition: 'opacity .2s',
-          }}
-            onMouseEnter={e => e.currentTarget.style.opacity = '.8'}
-            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-          >Заказать консультацию →</button>
-        </Fade>
-      </Wrap>
-    </section>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
 // ROOT
 // ═══════════════════════════════════════════════════════════════════════════
 export default function App() {
@@ -1381,14 +1183,12 @@ export default function App() {
         }
       `}</style>
 
-      <NavBar onCTAClick={() => setModalOpen(true)} />
       <StarfieldCanvas />
       <Hero       sectionRef={heroRef} onCTAClick={() => setModalOpen(true)} />
-      <SellStrip  onCTAClick={() => setModalOpen(true)} />
       <Timeline   sectionRef={timelineRef} />
       <HowItWorks sectionRef={howRef} />
       <Discussion sectionRef={discRef} />
-      <Final      sectionRef={finalRef} onCTAClick={() => setModalOpen(true)} />
+      <Final      sectionRef={finalRef} />
       <ProgressNav sectionRefs={sectionRefs} activeSection={activeSection} />
       {modalOpen && <Modal onClose={() => setModalOpen(false)} />}
     </div>
