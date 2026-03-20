@@ -660,10 +660,11 @@ function Timeline({ sectionRef }) {
       {width > TABLET && (
         <div style={{
           position: 'absolute',
-          left: 'clamp(54%, 58%, 64%)',
-          bottom: '33%',
+          left: 'calc(77% - 162px)',
+          bottom: '30%',
           zIndex: 2,
           pointerEvents: 'none',
+          maxWidth: 'calc(100% - 20px)',
           transform: dialogVis ? 'translateX(0)' : 'translateX(100vw)',
           transition: 'transform 0.75s cubic-bezier(0.16,1,0.3,1)',
           display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 10,
@@ -674,7 +675,7 @@ function Timeline({ sectionRef }) {
             border: '1px solid rgba(74,110,98,0.20)',
             borderRadius: 14,
             padding: '18px 23px',
-            width: 325,
+            width: 'min(325px, 28vw)',
             boxShadow: '0 4px 24px rgba(0,100,60,0.08)',
           }}>
             <div style={{ marginBottom: 14 }}>
@@ -773,7 +774,7 @@ function HowItWorks({ sectionRef }) {
     }}>
       <Wrap>
         <Fade>
-          <div style={{ marginBottom: isMobile ? 40 : 80 }}>
+          <div style={{ marginBottom: isMobile ? 40 : 80, textAlign: 'center' }}>
             <p style={{ fontFamily: FONT, fontWeight: 600, fontSize: 11, letterSpacing: 3, color: C.green, textTransform: 'uppercase', marginBottom: 16 }}>
               Процесс
             </p>
