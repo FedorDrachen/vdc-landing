@@ -252,7 +252,7 @@ function Hero({ sectionRef, onCTAClick }) {
         </p>
 
         <div id="hero-cta" style={{ opacity: on ? 1 : 0, transform: on ? 'none' : 'translateY(14px)', transition: tr(680) }}>
-          <CTABtn onClick={onCTAClick}>Начать сейчас</CTABtn>
+          <CTABtn onClick={onCTAClick}>Узнать подробнее</CTABtn>
         </div>
       </Wrap>
     </section>
